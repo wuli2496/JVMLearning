@@ -10,20 +10,11 @@ public class Test {
     public static void main(String[] args) throws Exception {
         ClassPool pool = ClassPool.getDefault();
 
-        CtClass cc = pool.get("chapter04_virtualSubSystem.Test");
-        try {
-            cc.getDeclaredMethod("g");
-            System.out.println("g() is already defined in sample.Test.");
-        }
-        catch (NotFoundException e) {
-            /* getDeclaredMethod() throws an exception if g()
-             * is not defined in sample.Test.
-             */
-            CtMethod fMethod = cc.getDeclaredMethod("f");
-            CtMethod gMethod = CtNewMethod.copy(fMethod, "g", cc, null);
-            cc.addMethod(gMethod);
-            cc.writeFile();	// update the class file
-            System.out.println("g() was added.");
-        }
+        CtClass cc = pool.get("chapter04_virtualSubSystem.Hello");
+        CtMethod m = cc.getDeclaredMethod("say");
+        m.insertBefore("{System.out.println(\"Hello.say():\");}");
+        Class c = cc.toClass();
+        Hello h = (Hello)c.newInstance();
+        h.say();
     }
 }
